@@ -1,59 +1,47 @@
 package com.ganado.inventario.controller;
-
-import com.ganado.inventario.dto.AnimalDTO;
-import com.ganado.inventario.dto.CreateAnimalRequest;
-import com.ganado.inventario.dto.CreateHistorialRequest;
-import com.ganado.inventario.dto.HistorialDTO;
+import com.ganado.inventario.dto.AnimalRequestDTO;
+import com.ganado.inventario.dto.AnimalResponseDTO;
 import com.ganado.inventario.service.AnimalService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.net.URI;
+
 import java.util.List;
+import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/animales")
+@RequestMapping("/api/inventory/animales")
+@RequiredArgsConstructor
 public class AnimalController {
 
-    private final AnimalService service;
-
-    public AnimalController(AnimalService service) {
-        this.service = service;
-    }
+    private final AnimalService animalService;
 
     @PostMapping
-    public ResponseEntity<AnimalDTO> create(@RequestBody CreateAnimalRequest req) {
-        AnimalDTO created = service.createAnimal(req);
-        return ResponseEntity.created(URI.create("/api/animales/" + created.id())).body(created);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<AnimalDTO> update(@PathVariable Long id, @RequestBody CreateAnimalRequest req) {
-        return ResponseEntity.ok(service.updateAnimal(id, req));
+    public ResponseEntity<AnimalResponseDTO> crear(@RequestBody AnimalRequestDTO request) {
+        return ResponseEntity.ok(animalService.crear(request));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AnimalDTO> getOne(@PathVariable Long id) {
-        return ResponseEntity.ok(service.getAnimal(id));
-    }
-
-    @GetMapping("/identificacion/{ident}")
-    public ResponseEntity<AnimalDTO> getByIdent(@PathVariable String ident) {
-        return ResponseEntity.ok(service.getByIdentificacion(ident));
+    public ResponseEntity<AnimalResponseDTO> obtenerPorId(@PathVariable UUID id) {
+        return ResponseEntity.ok(animalService.obtenerPorId(id));
     }
 
     @GetMapping
-    public ResponseEntity<List<AnimalDTO>> list() {
-        return ResponseEntity.ok(service.listAll());
+    public ResponseEntity<List<AnimalResponseDTO>> listar() {
+        return ResponseEntity.ok(animalService.listarTodos());
     }
 
-    @PostMapping("/{id}/historial")
-    public ResponseEntity<HistorialDTO> addHistorial(@PathVariable Long id, @RequestBody CreateHistorialRequest req) {
-        HistorialDTO h = service.addHistorial(id, req);
-        return ResponseEntity.created(URI.create("/api/animales/" + id + "/historial/" + h.id())).body(h);
+    @PutMapping("/{id}")
+    public ResponseEntity<AnimalResponseDTO> actualizar(
+            @PathVariable UUID id,
+            @RequestBody AnimalRequestDTO request
+    ) {
+        return ResponseEntity.ok(animalService.actualizar(id, request));
     }
 
-    @GetMapping("/{id}/historial")
-    public ResponseEntity<List<HistorialDTO>> historial(@PathVariable Long id) {
-        return ResponseEntity.ok(service.getHistorial(id));
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminar(@PathVariable UUID id) {
+        animalService.eliminar(id);
+        return ResponseEntity.noContent().build();
     }
 }

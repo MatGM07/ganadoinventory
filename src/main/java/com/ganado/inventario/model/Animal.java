@@ -9,40 +9,46 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
+
+import java.time.LocalDate;
+import java.util.UUID;
 
 @Entity
-@Table(name = "animales")
-@Data                   // getters, setters, toString, equals y hashCode
-@NoArgsConstructor      // constructor vacío
-@AllArgsConstructor     // constructor con todos los campos
-@Builder                // builder pattern (opcional)
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Animal {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String identificacion; // chip, marca o código
+    @Id
+    @GeneratedValue
+    @Column(columnDefinition = "BINARY(16)")
+    private UUID id;
+
+    @Column(nullable = false)
+    private String especie;
 
     @Column(nullable = false)
     private String raza;
 
     @Column(nullable = false)
-    private String especie;
+    private String sexo;
 
-    // edad en años (se puede calcular a partir de fechaNacimiento si prefieres)
-    private Integer edad;
-
-    private Double peso; // kg
-
-    private String ubicacion; // nombre del potrero/galpón/estabulación
-
+    @Column(nullable = false)
     private LocalDate fechaNacimiento;
 
-    @OneToMany(mappedBy = "animal", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy("fecha DESC")
-    private List<AnimalHistorial> historial = new ArrayList<>();
+    @Column(nullable = false)
+    private Double peso;
 
-    // getters y setters (omitir por brevedad)
-    // constructor vacío, equals/hashCode por id
+    @Column(nullable = false)
+    private String ubicacion;
+
+    // Cada animal pertenece a una finca
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "finca_id", nullable = false)
+    private Finca finca;
 }

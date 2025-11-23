@@ -5,8 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 import java.util.List;
+import java.util.UUID;
 
-public interface AnimalRepository extends JpaRepository<Animal, Long> {
-    Optional<Animal> findByIdentificacion(String identificacion);
-    List<Animal> findByRaza(String raza);
+public interface AnimalRepository extends JpaRepository<Animal, UUID> {
+
 }
