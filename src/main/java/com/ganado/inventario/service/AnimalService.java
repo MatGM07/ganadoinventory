@@ -19,4 +19,6 @@ public interface AnimalService {
     AnimalResponseDTO actualizar(UUID id, AnimalRequestDTO dto);
 
     void eliminar(UUID id);
+
+    List<AnimalResponseDTO> obtenerPorEspecie(String especie);
 }

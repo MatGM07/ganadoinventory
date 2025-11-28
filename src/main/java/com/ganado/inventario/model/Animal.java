@@ -41,14 +41,20 @@ public class Animal {
     @Column(nullable = false)
     private LocalDate fechaNacimiento;
 
-    @Column(nullable = false)
+
     private Double peso;
 
-    @Column(nullable = false)
+    @Column(name = "identificador", length = 100, nullable = false)
+    private String identificador;
+
     private String ubicacion;
 
     // Cada animal pertenece a una finca
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "finca_id", nullable = false)
     private Finca finca;
+
+    @Builder.Default
+    @Column(nullable = false, columnDefinition = "varchar(8) default 'Activo'")
+    private String estado = "Activo";
 }

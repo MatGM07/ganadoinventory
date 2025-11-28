@@ -44,4 +44,10 @@ public class AnimalController {
         animalService.eliminar(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/especie/{especie}")
+    public ResponseEntity<List<AnimalResponseDTO>> obtenerPorEspecie(@PathVariable String especie) {
+        List<AnimalResponseDTO> resultados = animalService.obtenerPorEspecie(especie);
+        return ResponseEntity.ok(resultados);
+    }
 }
